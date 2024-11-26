@@ -1,0 +1,176 @@
+/* General Reset */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: #0f005f;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background Image */
+.background-art {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('bg.jpg') no-repeat center center;
+    background-size: cover;
+    z-index: 0;
+    opacity: 0.3;
+    animation: sway 6s ease-in-out infinite;
+}
+
+/* Sway effect */
+@keyframes sway {
+    0%, 100% {
+        transform: translateX(-10px);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+}
+
+/* Background Grid */
+.grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        to right,
+        rgba(2, 55, 136, 0.8) 0px,
+        rgba(2, 55, 136, 0.8) 1px,
+        transparent 1px,
+        transparent 30px
+    ),
+    repeating-linear-gradient(
+        to bottom,
+        rgba(146, 0, 117, 0.8) 0px,
+        rgba(146, 0, 117, 0.8) 1px,
+        transparent 1px,
+        transparent 30px
+    );
+    z-index: 1;
+    opacity: 0.1;
+    animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0.6;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Upload Container */
+.upload-container {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(255, 20, 147, 0.9), rgba(0, 191, 255, 0.9));
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.8), 0 0 30px rgba(0, 191, 255, 0.8);
+    text-align: center;
+}
+
+h2 {
+    color: #fff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+/* Drop Area */
+.drop-area {
+    border: 2px dashed rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 20px;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effect */
+.drop-area:hover {
+    background: rgba(255, 255, 255, 0.1); /* Lighten background */
+    border-color: rgba(255, 255, 255, 0.9); /* Brighten border */
+    transform: scale(1.02); /* Slightly enlarge the drop area */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Add a subtle glow */
+}
+
+/* Active/Click Effect */
+.drop-area:active {
+    background: rgba(0, 0, 0, 0.5); /* Darken background on click */
+    border-color: rgba(0, 191, 255, 0.9); /* Add a cyan border */
+    transform: scale(0.98); /* Slightly shrink the drop area */
+    box-shadow: 0 0 5px rgba(0, 191, 255, 0.5); /* Add a focused glow */
+}
+
+/* Dragover Effect (already existing but updated for consistency) */
+.drop-area.dragover {
+    background: rgba(255, 255, 255, 0.1); /* Similar to hover effect */
+    border-color: rgba(255, 255, 255, 0.9); /* Brightened border */
+}
+
+/* Responsive Design for Mobile Only */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* Adjusts layout for vertical stacking */
+        padding: 10px;
+    }
+
+    .upload-container {
+        max-width: 90%;
+        padding: 20px;
+        margin: 20px auto;
+        transform: scale(0.9); /* Scales down the container slightly */
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .drop-area {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    .upload-btn {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .upload-container {
+        max-width: 95%;
+        padding: 15px;
+        transform: scale(0.8); /* Further scales down for smaller screens */
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    .drop-area {
+        padding: 15px;
+        font-size: 0.8rem;
+    }
+
+    .upload-btn {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
