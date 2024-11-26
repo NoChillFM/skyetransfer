@@ -2,12 +2,8 @@
 Synthwave .PHP file upload system with a clean GUI, easy to customize, and clean file storage.
 
 <img src="https://github.com/user-attachments/assets/3a27beb3-cebd-4e81-a966-2e405c2a95af" alt="Resized Image" width="600">
-<video autoplay loop muted style="width:100%; height:100%; object-fit:cover;">
-    <source src="https://github.com/user-attachments/assets/6eff1db4-7004-4963-ab32-2738f496c1c0" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
 
-https://github.com/user-attachments/assets/6eff1db4-7004-4963-ab32-2738f496c1c0
+![SKYEtransfer](https://github.com/user-attachments/assets/6463c9e9-d3cf-4cf7-a7a5-0ac2488aacc7)
 
 
 ## <a name="features"></a> Features
