@@ -193,7 +193,17 @@
     // File restrictions
     fileInput.addEventListener('change', () => {
     const file = fileInput.files[0];
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/plain']; // MIME types
+    const allowedTypes = [
+    'image/jpeg',  // .jpg
+    'image/png',   // .png
+    'application/pdf',  // .pdf
+    'text/plain',  // .txt
+    'video/mp4',   // .mp4
+    'audio/mpeg',  // .mp3
+    'application/zip',  // .zip
+    'application/x-rar-compressed', // .rar
+    'application/vnd.rar' // Alternative for .rar
+]; // MIME types
     const maxSizeInMB = 5; // Maximum file size in MB
     const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
