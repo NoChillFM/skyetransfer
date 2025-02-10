@@ -118,7 +118,7 @@
         <div id="drop-area" class="drop-area">Drop your file here</div>
         <form id="upload-form" method="post" enctype="multipart/form-data">
             <!-- File restrictions enabled -->
-            <input type="file" name="file" id="file" accept=".jpg,.png,.pdf,.txt" required>
+            <input type="file" name="file" id="file" accept=".jpg,.png,.pdf,.txt,.mp4,.mp3,.zip,.rar" required>
            <!-- File restrictions disabled -->
      <!--   <input type="file" name="file" id="file" style="display: none;" required> -->
         </form>
