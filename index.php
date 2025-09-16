@@ -118,7 +118,7 @@
         <div id="drop-area" class="drop-area">Drop your file here</div>
         <form id="upload-form" method="post" enctype="multipart/form-data">
             <!-- File restrictions enabled -->
-            <input type="file" name="file" id="file" accept=".jpg,.png,.pdf,.txt,.mp4,.mp3,.zip,.rar" style="display: none;" required>
+            <input type="file" name="file" id="file" accept=".jpg,.jpeg,.png,.pdf,.txt,.mp4,.mp3,.zip,.rar" style="display: none;" required>
            <!-- File restrictions disabled -->
      <!--   <input type="file" name="file" id="file" style="display: none;" required> -->
         </form>
@@ -162,6 +162,23 @@
     const progressContainer = document.getElementById('progress-container');
     const cancelBtn = document.getElementById('cancel-btn');
 
+    const allowedFileTypes = {
+        jpg: { mime: ['image/jpeg', 'image/pjpeg', 'image/jpg'], label: 'JPG/JPEG' },
+        jpeg: { mime: ['image/jpeg', 'image/pjpeg', 'image/jpg'], label: 'JPG/JPEG' },
+        png: { mime: ['image/png'], label: 'PNG' },
+        pdf: { mime: ['application/pdf'], label: 'PDF' },
+        txt: { mime: ['text/plain'], label: 'TXT' },
+        mp4: { mime: ['video/mp4'], label: 'MP4' },
+        mp3: { mime: ['audio/mpeg', 'audio/mp3'], label: 'MP3' },
+        zip: { mime: ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip'], label: 'ZIP' },
+        rar: { mime: ['application/x-rar-compressed', 'application/vnd.rar'], label: 'RAR' }
+    };
+    const allowedTypes = [...new Set(Object.values(allowedFileTypes).flatMap((typeInfo) => typeInfo.mime))];
+    const allowedTypeSet = new Set(allowedTypes);
+    const allowedExtensions = new Set(Object.keys(allowedFileTypes));
+    const allowedTypeLabels = [...new Set(Object.values(allowedFileTypes).map((typeInfo) => typeInfo.label))].join(', ');
+    const genericBrowserMimes = new Set(['application/octet-stream']);
+
     let xhr = null; // For canceling the upload
     let startTime;
 
@@ -179,48 +196,50 @@
         e.preventDefault();
         dropArea.classList.remove('dragover');
         fileInput.files = e.dataTransfer.files; // Assign dropped files to input
-        autoUpload();
+        handleFileSelection();
     });
 
     dropArea.addEventListener('click', () => {
         fileInput.click();
     });
 
-    fileInput.addEventListener('change', () => {
-        autoUpload();
-    });
-
     // File restrictions
-    fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
-    const allowedTypes = [
-    'image/jpeg',  // .jpg
-    'image/png',   // .png
-    'application/pdf',  // .pdf
-    'text/plain',  // .txt
-    'video/mp4',   // .mp4
-    'audio/mpeg',  // .mp3
-    'application/zip',  // .zip
-    'application/x-rar-compressed', // .rar
-    'application/vnd.rar' // Alternative for .rar
-]; // MIME types
-    const maxSizeInMB = 5; // Maximum file size in MB
-    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+    function handleFileSelection() {
+        const file = fileInput.files[0];
+        if (!file) return;
 
-    if (!allowedTypes.includes(file.type)) {
-        alert('Invalid file type. Allowed types: JPG, PNG, PDF, TXT.');
-        fileInput.value = ''; // Clear the input
-        return;
+        const fileExtension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+
+        if (!allowedExtensions.has(fileExtension)) {
+            alert(`Invalid file type. Allowed types: ${allowedTypeLabels}.`);
+            fileInput.value = ''; // Clear the input
+            return;
+        }
+
+        const allowedMimesForExtension = allowedFileTypes[fileExtension].mime;
+        const browserReportedMime = file.type;
+
+        if (browserReportedMime && !genericBrowserMimes.has(browserReportedMime)) {
+            if (!allowedTypeSet.has(browserReportedMime) || !allowedMimesForExtension.includes(browserReportedMime)) {
+                alert(`Invalid file type. Allowed types: ${allowedTypeLabels}.`);
+                fileInput.value = ''; // Clear the input
+                return;
+            }
+        }
+
+        const maxSizeInMB = 5; // Maximum file size in MB
+        const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+        if (file.size > maxSizeInBytes) {
+            alert(`File size exceeds ${maxSizeInMB} MB.`);
+            fileInput.value = ''; // Clear the input
+            return;
+        }
+
+        autoUpload(); // Proceed with upload if validation passes
     }
 
-    if (file.size > maxSizeInBytes) {
-        alert(`File size exceeds ${maxSizeInMB} MB.`);
-        fileInput.value = ''; // Clear the input
-        return;
-    }
-
-    autoUpload(); // Proceed with upload if validation passes
-});
+    fileInput.addEventListener('change', handleFileSelection);
 
     // Auto upload functionality
     function autoUpload() {
