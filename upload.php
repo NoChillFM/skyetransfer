@@ -14,10 +14,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/plain'];
     $maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
 
-    if (!in_array($file['type'], $allowedTypes)) {
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if ($finfo === false) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Invalid file type. Allowed types: JPG, PNG, PDF, TXT.'
+            'message' => 'Unable to validate file type at this time.'
+        ]);
+        exit;
+    }
+
+    $detectedType = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    if ($detectedType === false) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Could not determine the uploaded file\'s type.'
+        ]);
+        exit;
+    }
+
+    if (!in_array($detectedType, $allowedTypes, true)) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid file type detected. Allowed types: JPG, PNG, PDF, TXT.'
         ]);
         exit;
     }
