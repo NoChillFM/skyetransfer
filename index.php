@@ -165,6 +165,38 @@
     let xhr = null; // For canceling the upload
     let startTime;
 
+    const allowedTypes = [
+        'image/jpeg',  // .jpg
+        'image/png',   // .png
+        'application/pdf',  // .pdf
+        'text/plain',  // .txt
+        'video/mp4',   // .mp4
+        'audio/mpeg',  // .mp3
+        'application/zip',  // .zip
+        'application/x-rar-compressed', // .rar
+        'application/vnd.rar' // Alternative for .rar
+    ]; // MIME types
+    const maxSizeInMB = 5; // Maximum file size in MB
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+    function validateFile(file) {
+        if (!file) {
+            return false;
+        }
+
+        if (!allowedTypes.includes(file.type)) {
+            alert('Invalid file type. Allowed types: JPG, PNG, PDF, TXT.');
+            return false;
+        }
+
+        if (file.size > maxSizeInBytes) {
+            alert(`File size exceeds ${maxSizeInMB} MB.`);
+            return false;
+        }
+
+        return true;
+    }
+
     // Drag-and-drop events
     dropArea.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -178,7 +210,19 @@
     dropArea.addEventListener('drop', (e) => {
         e.preventDefault();
         dropArea.classList.remove('dragover');
-        fileInput.files = e.dataTransfer.files; // Assign dropped files to input
+
+        const files = e.dataTransfer.files;
+        if (!files || files.length === 0) {
+            return;
+        }
+
+        const file = files[0];
+        if (!validateFile(file)) {
+            fileInput.value = '';
+            return;
+        }
+
+        fileInput.files = files; // Assign dropped files to input
         autoUpload();
     });
 
@@ -187,40 +231,18 @@
     });
 
     fileInput.addEventListener('change', () => {
-        autoUpload();
+        const file = fileInput.files[0];
+        if (!file) {
+            return;
+        }
+
+        if (!validateFile(file)) {
+            fileInput.value = ''; // Clear the input
+            return;
+        }
+
+        autoUpload(); // Proceed with upload if validation passes
     });
-
-    // File restrictions
-    fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
-    const allowedTypes = [
-    'image/jpeg',  // .jpg
-    'image/png',   // .png
-    'application/pdf',  // .pdf
-    'text/plain',  // .txt
-    'video/mp4',   // .mp4
-    'audio/mpeg',  // .mp3
-    'application/zip',  // .zip
-    'application/x-rar-compressed', // .rar
-    'application/vnd.rar' // Alternative for .rar
-]; // MIME types
-    const maxSizeInMB = 5; // Maximum file size in MB
-    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-
-    if (!allowedTypes.includes(file.type)) {
-        alert('Invalid file type. Allowed types: JPG, PNG, PDF, TXT.');
-        fileInput.value = ''; // Clear the input
-        return;
-    }
-
-    if (file.size > maxSizeInBytes) {
-        alert(`File size exceeds ${maxSizeInMB} MB.`);
-        fileInput.value = ''; // Clear the input
-        return;
-    }
-
-    autoUpload(); // Proceed with upload if validation passes
-});
 
     // Auto upload functionality
     function autoUpload() {
