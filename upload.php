@@ -104,7 +104,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     if ($file['error'] === UPLOAD_ERR_OK) {
         if (move_uploaded_file($file['tmp_name'], $uploadFilePath)) {
-            $downloadUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/sandbox/download.php?file=' . urlencode($uniqueFilename);
+            $scheme = !empty($_SERVER['REQUEST_SCHEME'])
+                ? $_SERVER['REQUEST_SCHEME']
+                : (!empty($_SERVER['HTTPS']) ? 'https' : 'http');
+            $host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
+            $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+            $scriptDir = str_replace('\\', '/', dirname($scriptName));
+            if ($scriptDir === '/' || $scriptDir === '\\' || $scriptDir === '.') {
+                $scriptDir = '';
+            }
+            $scriptDir = rtrim($scriptDir, '/');
+            $downloadPath = ($scriptDir !== '' ? $scriptDir : '') . '/download.php';
+            $downloadUrl = $scheme . '://' . $host . $downloadPath . '?file=' . urlencode($uniqueFilename);
             echo json_encode([
                 'status' => 'success',
                 'message' => 'File uploaded successfully!',
